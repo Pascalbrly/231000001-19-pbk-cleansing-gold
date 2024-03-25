@@ -1,8 +1,6 @@
 # NEW
 import pandas as pd
 import re
-import matplotlib.pyplot as plt
-import seaborn as sns
 import sqlite3
 from num2words import num2words
 from flask import Flask, jsonify
@@ -135,6 +133,8 @@ def text_processing_file():
     # koneksi dengan database
     conn = sqlite3.connect('binar_gold.db')
     cursor = conn.cursor()
+
+    cursor.execute('drop table if exists cleaned_text')
 
     # membuat table cleaned_text 
     cursor.execute('create table if not exists cleaned_text(id integer primary key autoincrement, text text)')
