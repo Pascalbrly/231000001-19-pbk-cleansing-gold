@@ -4,7 +4,7 @@ import re
 import matplotlib.pyplot as plt
 import seaborn as sns
 import sqlite3
-# from num2words import num2words
+from num2words import num2words
 from flask import Flask, jsonify
 from flask import request
 from flasgger import Swagger, LazyString, LazyJSONEncoder
@@ -23,7 +23,7 @@ def clean_text(text):
     text = text.replace('_', ' ')
     text = re.sub(r'(\d+)', r' \1 ', text)
     text = re.sub(r'\s+', ' ', text).strip()
-    # text = re.sub(r'(\d+)', lambda x: num2words(int(x.group(0)), lang='id'), text)
+    text = re.sub(r'(\d+)', lambda x: num2words(int(x.group(0)), lang='id'), text)
     return text
 
 alay_df = pd.read_csv('new_kamusalay.csv', encoding='latin-1', header=None)
