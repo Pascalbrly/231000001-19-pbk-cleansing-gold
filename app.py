@@ -93,7 +93,7 @@ def hello_world():
 #     response_data = jsonify(json_response)
 #     return response_data
 
-@swag_from("C://Users/Admin/Documents/GitHub/231000001-19-pbk-cleansing-gold/docs/text_processing.yml", methods=['POST'])
+@swag_from("docs/text_processing.yml", methods=['POST'])
 @app.route('/text-processing', methods=['POST'])
 def text_processing():
     text = request.form.get('text')
@@ -122,7 +122,7 @@ def text_processing():
     return response_data
 
 
-@swag_from("C://Users/Admin/Documents/GitHub/231000001-19-pbk-cleansing-gold/docs/text_processing_file.yml", methods=['POST'])
+@swag_from("docs/text_processing_file.yml", methods=['POST'])
 @app.route('/text-processing-file', methods=['POST'])
 def text_processing_file():
     # Upladed file
