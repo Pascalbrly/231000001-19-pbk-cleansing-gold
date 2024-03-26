@@ -96,10 +96,21 @@ def hello_world():
 @swag_from("C://Users/Admin/Documents/GitHub/231000001-19-pbk-cleansing-gold/docs/text_processing.yml", methods=['POST'])
 @app.route('/text-processing', methods=['POST'])
 def text_processing():
-
     text = request.form.get('text')
     cleaned_text = clean_text(text)
     normalized_text = normalisasi_alay(cleaned_text)
+
+    conn = sqlite3.connect('binar_gold.db')
+    cursor = conn.cursor()
+
+    # Membuat tabel cleaned_text jika belum ada
+    cursor.execute('create table if not exists insert_text(id integer primary key autoincrement, text text)')
+    
+    # Memasukkan data ke dalam tabel
+    cursor.execute('insert into insert_text(text) values (?)', (normalized_text,))
+    
+    conn.commit()
+    conn.close()
 
     json_response = {
         'status_code': 200,
@@ -110,15 +121,15 @@ def text_processing():
     response_data = jsonify(json_response)
     return response_data
 
+
 @swag_from("C://Users/Admin/Documents/GitHub/231000001-19-pbk-cleansing-gold/docs/text_processing_file.yml", methods=['POST'])
 @app.route('/text-processing-file', methods=['POST'])
 def text_processing_file():
-
     # Upladed file
     file = request.files.getlist('file')[0]
 
     # Import file csv ke Pandas
-    data = pd.read_csv('data.csv',encoding='latin-1')
+    data = pd.read_csv('data.csv', encoding='latin-1')
 
     # Ambil teks yang akan diproses dalam format list
     texts = data.Tweet.to_list()
@@ -129,22 +140,20 @@ def text_processing_file():
         text = clean_text(text)
         text = normalisasi_alay(text)
         cleaned_text.append(text)
-    
-    # koneksi dengan database
+
     conn = sqlite3.connect('binar_gold.db')
     cursor = conn.cursor()
 
-    cursor.execute('drop table if exists cleaned_text')
-
-    # membuat table cleaned_text 
+    # Membuat tabel cleaned_text
     cursor.execute('create table if not exists cleaned_text(id integer primary key autoincrement, text text)')
-    
-    # insert data di table cleaned_text
+
+    # Insert data di tabel cleaned_text
     for text in cleaned_text:
         cursor.execute('insert into cleaned_text(text) values (?)', (text,))
-    
+
     conn.commit()
-    
+    conn.close()
+
     json_response = {
         'status_code': 200,
         'description': "Teks yang sudah diproses",
@@ -153,6 +162,7 @@ def text_processing_file():
 
     response_data = jsonify(json_response)
     return response_data
+
 
 if __name__ == '__main__':
    app.run()
